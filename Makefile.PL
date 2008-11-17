@@ -4,7 +4,7 @@ use ExtUtils::MakeMaker;
 
 WriteMakefile(
     NAME                => 'WWW::Search::PharmGKB',
-    AUTHOR              => 'Your Name <arun@cpan.org>',
+    AUTHOR              => 'Arun Venkataraman <arun@cpan.org>',
     VERSION_FROM        => 'lib/WWW/Search/PharmGKB.pm',
     ABSTRACT_FROM       => 'lib/WWW/Search/PharmGKB.pm',
     ($ExtUtils::MakeMaker::VERSION >= 6.3002

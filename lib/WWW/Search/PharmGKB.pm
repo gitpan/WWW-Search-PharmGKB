@@ -1,5 +1,5 @@
 package WWW::Search::PharmGKB;
-#use strict;
+use strict;
 use SOAP::Lite;
 import SOAP::Data 'type';
 use English;
@@ -7,33 +7,7 @@ use Carp;
 use vars qw($VERSION);
 use Data::Dumper;
 
-=head1 NAME
-
-WWW::Search::PharmGKB - Search and retrieve information from the PharmGKB database
-
-=head1 VERSION
-
-Version 0.01
-
-=cut
-
-$VERSION = '1.01';
-
-
-=head1 SYNOPSIS
-
-    use WWW::Search::PharmGKB;
-    use Data:Dumper;
-    my $foo = WWW::Search::PharmGKB->new();
-    my $search_result = $foo->search({gene => CYP2D6});
-    print Dumper $search_result;
-
-
-=head1 METHODS
-
-=head2 Constructor
-
-=cut
+$VERSION = '1.02';
 
 sub new {
     my $class = shift;
@@ -46,15 +20,15 @@ sub new {
     return $self;
 }
 
-=header2 gene_search
-Usage: $self->gene_search(<gene_name>);
-returns: a referenced hash. The keys are
-            'drugs', 'name', 'symbol', 'pathways', 'drugs', 'diseases', 'phenotypes',
-	    'alternate_names', 'alternate_symbols'
-Note: all the keys contain referenced arrays as values. in the pathway value,
-      the array has  key => value pairs 'pathway' => 'pharmGKB URL' as elements.
-      All other keys have referenced array of PharmGKB IDs.
-=cut
+
+#Usage: $self->gene_search(<gene_name>);
+#returns: a referenced hash. The keys are
+#            'drugs', 'name', 'symbol', 'pathways', 'drugs', 'diseases', 'phenotypes',
+#	    'alternate_names', 'alternate_symbols'
+#Note: all the keys contain referenced arrays as values. in the pathway value,
+#      the array has  key => value pairs 'pathway' => 'pharmGKB URL' as elements.
+#      All other keys have referenced array of PharmGKB IDs.
+
 
 sub gene_search {
 
@@ -122,14 +96,13 @@ sub gene_search {
     return $result_obj;
 }
 
-=header2 disease_search
-Usage: $self->disease_search(<disease_name>);
-returns: a referenced hash. The keys are
-            'drugs', 'names', 'pathways', 'drugs', 'genes', 'phenotypes'
-Note: all the keys contain referenced arrays as values. in the pathway value,
-      the array has  key => value pairs 'pathway' => 'pharmGKB URL' as elements.
-      All other keys have referenced array of PharmGKB IDs.
-=cut
+
+#Usage: $self->disease_search(<disease_name>);
+#returns: a referenced hash. The keys are
+#            'drugs', 'names', 'pathways', 'drugs', 'genes', 'phenotypes'
+#Note: all the keys contain referenced arrays as values. in the pathway value,
+#      the array has  key => value pairs 'pathway' => 'pharmGKB URL' as elements.
+#      All other keys have referenced array of PharmGKB IDs.
 
 sub disease_search {
 
@@ -193,15 +166,14 @@ sub disease_search {
     return $result_obj;
 }
 
-=header2 drug_search
-Usage: $self->drug_search(<drug_name>);
-returns: a referenced hash. The keys are
-            'diseases', 'generic_names', 'trade_names', 'pathways', 'genes',
-	    'phenotypes', 'category', 'classification'
-Note: all the keys contain referenced arrays as values. in the pathway value,
-      the array has  key => value pairs 'pathway' => 'pharmGKB URL' as elements.
-      All other keys have referenced array of PharmGKB IDs.
-=cut
+
+#Usage: $self->drug_search(<drug_name>);
+#returns: a referenced hash. The keys are
+#            'diseases', 'generic_names', 'trade_names', 'pathways', 'genes',
+#	    'phenotypes', 'category', 'classification'
+#Note: all the keys contain referenced arrays as values. in the pathway value,
+#      the array has  key => value pairs 'pathway' => 'pharmGKB URL' as elements.
+#      All other keys have referenced array of PharmGKB IDs.
 
 sub drug_search {
     my $self = shift;
@@ -276,10 +248,10 @@ sub drug_search {
     return $result_obj;
 }
 
-=header2 publication_search
-Usage: $self->publication_search(<something>);
-Returns: A referenced hash
-=cut
+
+#Usage: $self->publication_search(<something>);
+#Returns: A referenced hash
+
 
 sub publication_search {
 
@@ -366,10 +338,6 @@ sub publication_search {
 }
 
 
-=head2 Internal Method
-
-=cut
-
 sub _search {
     my $self = shift;
     my($search_term, $key) = @_;
@@ -396,9 +364,283 @@ sub _search {
 
 }
 
+=head1 NAME
+
+WWW::Search::PharmGKB - Search and retrieve information from the PharmGKB database
+
+=head1 VERSION
+
+Version 1.02
+
+=cut
+
+=head1 SYNOPSIS
+
+    use WWW::Search::PharmGKB;
+    use Data:Dumper;
+    my $pharmgkb = WWW::Search::PharmGKB->new();
+    my $search_result = $pharmgkb->gene_search('CYP2D6');
+    print Dumper $search_result;
+
+=head1 DESCRIPTION
+
+    PharmGKB provides web services API to query their database. This module is an object oriented,
+    more flexible wrapper for the SOAP service. You can search for genes, publications, drugs and
+    diseases (more to come soon :) ). Note that the PharmGKB SOAP service is kinda slow and sometimes
+    a bit annoying too, but you will get some good quality data and it's better to wait for the
+    script to do the job than manual curation ;)
+
+=head1 METHODS
+
+=head2 Constructor
+
+    my $pharmgkb = new WWW::Search::PharmGKB;
+
+=head2 gene_search
+
+    Usage: $self->gene_search('CYP2D6');
+
+    This method is used to search for information about genes. the method takes in only one gene name
+    at a time. It returns a referenced hash like this :
+    'PA128' => {
+                     'pathways' => [
+                                     {
+                                       'Anti-estrogen Pathway (Tamoxifen PK)' => '/search/pathway/antiestrogen/tamoxifen.jsp'
+                                     },
+                                     {
+                                       'Celecoxib Pathway' => '/search/pathway/celecoxib/celecoxib.jsp'
+                                     },
+                                     {
+                                       'Codeine and Morphine Pathway (PK)' => '/search/pathway/codeine-morphine/codeineMorphine-pk.jsp'
+                                     },
+                                     {
+                                       'Statin Pathway (PK)' => '/search/pathway/statin/statin-pk.jsp'
+                                     }
+                                   ],
+                     'symbol' => 'CYP2D6',
+                     'drugs' => [
+                                  'PA131887008',
+                                  'PA151958637',
+                                  'PA134687949',
+                                  'PA448015',
+                                  'PA448073',
+                                  'PA448333',
+                                ],
+                     'alternate_names' => [
+                                            'CPD6',
+                                            'CYP2D',
+                                            'P450-DB1',
+                                            'P450C2D',
+                                            'cytochrome P450, subfamily IID (debrisoquine, sparteine, etc., -metabolizing), polypeptide 6',
+                                            'cytochrome P450, subfamily IID (debrisoquine, sparteine, etc., -metabolizing)-like 1',
+                                            'debrisoquine 4-hydroxylase',
+                                            'flavoprotein-linked monooxygenase',
+                                            'microsomal monooxygenase',
+                                            'xenobiotic monooxygenase'
+                                          ],
+                     'diseases' => [
+                                     'PA443485',
+                                     'PA443548',
+
+                                   ],
+                     'name' => 'cytochrome P450, family 2, subfamily D, polypeptide 6',
+                     'phenotypes' => [
+                                       'PA129411305',
+                                       'PA133888873',
+                                       'PA133888879',
+                                       'PA133888980',
+                                       'PA134736042',
+                                       'PA134736059',
+                                       'PA135349620',
+                                       'PA160680259',
+                                       'PA646603'
+                                     ],
+                     'alternate_symbols' => [
+                                              'CPD6',
+                                              'CYP2D',
+                                              'CYP2D@',
+                                              'CYP2DL1',
+                                              'MGC120389',
+                                              'MGC120390',
+                                              'P450-DB1',
+                                              'P450C2D'
+                                            ]
+                   }
+        };
+
+=head2 disease_search
+
+    Usage: $sef->disease_search('AIDS');
+
+    This method is used to search for information about diseases.
+    It returns a referenced hash like this :
+    $var = {
+	  'PA446816' => {
+                        'pathways' => [],
+                        'drugs' => '',
+                        'names' => [
+                                     'AIDS Wasting Syndrome',
+                                     'HIV Wasting Disease',
+                                     'Slim Disease',
+                                     'Wasting Disease, HIV',
+                                     'Wasting Syndrome, AIDS',
+                                     'Wasting Syndrome, HIV'
+                                   ],
+                        'genes' => '',
+                        'phenotypes' => ''
+                      },
+          'PA446298' => {
+                        'pathways' => [],
+                        'drugs' => '',
+                        'names' => [
+                                     'AIDS, Murine',
+                                     'AIDSs, Murine',
+                                     'MAIDS',
+                                     'Murine AIDS',
+                                     'Murine AIDSs',
+                                     'Murine Acquired Immune Deficiency Syndrome',
+                                     'Murine Acquired Immuno Deficiency Syndrome',
+                                     'Murine Acquired Immuno-Deficiency Syndrome'
+                                   ],
+                        'genes' => '',
+                        'phenotypes' => ''
+                      }
+        };
+
+=head2 drug_search
+
+    Usage: $sef->drug_search('AIDS');
+
+    This method is used to search for information about drugs.
+    It returns a referenced hash like this :
+    $var = {
+
+	    'PA448508' => {
+                        'pathways' => [],
+                        'diseases' => '',
+                        'genes' => '',
+                        'name' => 'attapulgite',
+                        'classification' => [
+                                              'GA208'
+                                            ],
+                        'category' => '',
+                        'phenotypes' => '',
+                        'trade_names' => [
+                                           'Diar-Aid',
+                                           'Diarrest',
+                                           'Diasorb',
+                                           'Diatrol',
+                                           'Donnagel',
+                                           'Fowler\'s',
+                                           'K-Pek',
+                                           'Kaopectate',
+                                           'Kaopectate Advanced Formula',
+                                           'Kaopectate Maximum Strength',
+                                           'Kaopek',
+                                           'Parepectolin',
+                                           'Rheaban'
+                                         ],
+                        'generic_names' => ''
+                      },
+          'PA448497' => {
+                        'pathways' => [
+                                        {
+                                          'Celecoxib Pathway' => '/search/pathway/celecoxib/celecoxib.jsp'
+                                        },
+                                        {
+                                          'Platelet Aggregation Pathway (PD)' => '/search/pathway/platelet/platelet-pd.jsp'
+                                        }
+                                      ],
+                        'diseases' => [
+                                        'PA443425',
+                                        'PA443635',
+                                        'PA447054',
+                                        'PA446108',
+                                        'PA443842',
+                                        'PA445019',
+                                        'PA153619833',
+                                        'PA131285571'
+                                      ],
+                        'genes' => [
+                                     'PA117',
+                                     'PA130',
+                                     'PA29938',
+                                     'PA205',
+                                     'PA378',
+                                     'PA32868',
+                                     'PA24346',
+                                     'PA293',
+                                     'PA37181'
+                                   ],
+                        'name' => 'aspirin',
+                        'classification' => '',
+                        'category' => '',
+                        'phenotypes' => [
+                                          'PA161845844'
+                                        ],
+                        'trade_names' => [
+                                           '217',
+                                           '217 Strong',
+                                           '8-Hour Bayer',
+                                           'Acetaminophen, Aspirin And Caffeine',
+                                           'Acetaminophen, Aspirin, And Codeine Phosphate',
+                                           'Acuprin 81',
+                                           'Aggrenox',
+                                           'Anacin',
+                                           'Anacin Caplets',
+                                           'Anacin Extra Strength',
+                                           'Anacin Maximum Strength',
+                                           'Anacin Tablets',
+                                           'Antidol',
+                                           'Apo-ASA',
+                                           'Apo-ASEN'
+                                         ],
+                        'generic_names' => ''
+                      }
+
+    };
+
+=head2 publication_search
+
+    Usage: $sef->publication_search('AIDS');
+    'AIDS' is just an example.. PharmGKB has a lot of publications
+    about AIDS and it takes a long time for the SOAP to respond.
+
+    This method is used to search for for publications.
+    It returns a referenced hash like this :
+    $var = {
+          'PA133822615' => {
+                           'authors' => [
+                                          'Leabman Maya K',
+                                          'Giacomini Kathleen M'
+                                        ],
+                           'page' => '581-4',
+                           'volume' => '13',
+                           'month' => '9',
+                           'grant_id' => '',
+                           'cross_reference' => [
+                                                  {
+                                                    'PubMed ID' => '12972957'
+                                                  }
+                                                ],
+                           'title' => 'Estimating the contribution of genes and environment to variation in renal drug clearance',
+                           'abstract' => 'Renal excretion is the major pathway for elimination of many clinically used drugs and xenobiotics. We estimated the genetic component (rGC) contributing to variation in renal clearance for six compounds (amoxicillin, ampicillin, metformin, terodiline, digoxin and iohexol) using Repeated Drug Application methodology. Data were obtained from published literature. The rGC values of renal clearance of metformin, amoxicillin, and ampicillin, which undergo transporter-mediated secretion, ranged from 0.64-0.94. This finding suggests that variation in the renal clearance of these drugs has a strong genetic component. Additionally, the rGC values of renal clearance of metformin, amoxicillin, and ampicillin were similar to previously reported rGC values for metabolism. By contrast, the rGC values of renal clearance for iohexol, digoxin, and terodiline were low (0.12-0.37). Renal clearance of these compounds occurs mainly through passive processes (e.g. glomerular filtration and passive secretion/reabsorption). The low rGC values of iohexol, digoxin and terodiline suggest that environmental factors may contribute to variation in their renal clearance.',
+                           'grants_id' => [
+                                            'GM61390'
+                                          ],
+                           'year' => '2003',
+                           'journal' => 'Pharmacogenetics'
+                         }
+    };
+
+=head1 TODO
+
+    Return information instead of a bunch of PharmGKB IDs and try to make
+    the SOAP respond faster. More features like phenotype/genotype data download.
+
 =head1 AUTHOR
 
-Arun Venkataraman, C<< <arvktr at gmail.com> >>
+Arun Venkataraman, C<< <arvktr@gmail.com> >>
 
 =head1 BUGS
 
