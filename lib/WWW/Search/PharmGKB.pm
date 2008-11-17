@@ -7,7 +7,7 @@ use Carp;
 use vars qw($VERSION);
 use Data::Dumper;
 
-$VERSION = '1.02';
+$VERSION = '1.03';
 
 sub new {
     my $class = shift;
@@ -370,7 +370,7 @@ WWW::Search::PharmGKB - Search and retrieve information from the PharmGKB databa
 
 =head1 VERSION
 
-Version 1.02
+Version 1.03
 
 =cut
 
