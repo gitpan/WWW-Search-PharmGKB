@@ -4,16 +4,14 @@ use ExtUtils::MakeMaker;
 
 WriteMakefile(
     NAME                => 'WWW::Search::PharmGKB',
-    AUTHOR              => 'Arun Venkataraman <arun@cpan.org>',
+    AUTHOR              => 'Arun Venkataraman <arvktr@gmail.org>',
     VERSION_FROM        => 'lib/WWW/Search/PharmGKB.pm',
     ABSTRACT_FROM       => 'lib/WWW/Search/PharmGKB.pm',
-    ($ExtUtils::MakeMaker::VERSION >= 6.3002
-      ? ('LICENSE'=> 'perl')
-      : ()),
+    INSTALLDIRS 	=> 'site',
     PL_FILES            => {},
     PREREQ_PM => {
         'Test::More' => 0,
+	'SOAP::Lite' => 0,
+	'English'    => 0,
     },
-    dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
-    clean               => { FILES => 'WWW-Search-PharmGKB-*' },
 );
