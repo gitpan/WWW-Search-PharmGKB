@@ -1,6 +1,6 @@
 ---
 name: WWW-Search-PharmGKB
-version: 1.06
+version: 1.07
 author:
   - Arun Venkataraman <arvktr@gmail.com>
 abstract: Search and retrieve information from the PharmGKB database
@@ -13,4 +13,4 @@ build_requires:
 provides:
   WWW::Search::PharmGKB:
     file: lib/WWW/Search/PharmGKB.pm
-    version: 1.06
+    version: 1.07
