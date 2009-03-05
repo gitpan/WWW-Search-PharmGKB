@@ -6,7 +6,7 @@ use English;
 use Carp;
 use vars qw($VERSION);
 
-$VERSION = 1.05;
+$VERSION = 1.06;
 
 sub new {
     my $class = shift;
