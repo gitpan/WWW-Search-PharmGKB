@@ -6,7 +6,9 @@ use English;
 use Carp;
 use vars qw($VERSION);
 
-$VERSION = 1.07;
+$VERSION = 1.08;
+
+#Usage: new WWW::Search::PharmGKB
 
 sub new {
     my $class = shift;
@@ -39,13 +41,12 @@ sub gene_search {
 
         foreach my $gene_id(@{$pharm_ids}) {
             my $local_hash = {};
-            my $search_result = SOAP::Lite
+            my $soap_service = SOAP::Lite
 		-> readable ($self->{readable})
 		-> uri($self->{uri})
 		-> proxy($self->{proxy})
-		-> searchGene ($gene_id)
-		-> result;
-
+		-> searchGene ($gene_id);
+	    my $search_result = $soap_service->result;
 	    $local_hash->{'alternate_names'} = '';
 	    $local_hash->{'drugs'} = '';
 	    $local_hash->{'diseases'} = '';
@@ -121,13 +122,14 @@ sub disease_search {
 
         foreach my $disease_id(@{$pharm_ids}) {
             my $local_hash = {};
-            my $search_result = SOAP::Lite
+            my $soap_service = SOAP::Lite
 		-> readable (1)
 		-> uri($self->{uri})
 		-> proxy($self->{proxy})
-		-> searchDisease ($disease_id)
-		-> result;
-
+		-> searchDisease ($disease_id);
+	    
+	    	
+	    my $search_result = $soap_service->result;
 	    $local_hash->{'names'} = '';
 	    $local_hash->{'drugs'} = '';
 	    $local_hash->{'genes'} = '';
@@ -189,12 +191,13 @@ sub drug_search {
     if($pharm_ids) {
         foreach my $drug_id(@{$pharm_ids}) {
             my $local_hash = {};
-            my $search_result = SOAP::Lite
+            my $soap_service = SOAP::Lite
 		-> readable (1)
 		-> uri($self->{uri})
 		-> proxy($self->{proxy})
-		-> searchDrug ($drug_id)
-		-> result;
+		-> searchDrug ($drug_id);
+		
+	    my $search_result = $soap_service->result;
 	    $local_hash->{'generic_names'} = '';
 	    $local_hash->{'trade_names'} = '';
 	    $local_hash->{'category'} = '';
@@ -268,13 +271,13 @@ sub publication_search {
     if($pharm_ids) {
 	foreach my $id(@{$pharm_ids}) {
 	    my $local_hash = {};
-	    my $search_result = SOAP::Lite
+	    my $soap_service = SOAP::Lite
 		-> readable ($self->{readable})
 		-> uri($self->{uri})
 		-> proxy($self->{proxy})
-		-> searchPublication ($id)
-		-> result;
+		-> searchPublication ($id);
 
+	    my $search_result = $soap_service->result;
 	    $local_hash->{'grant_id'} = '';
 	    $local_hash->{'journal'} = '';
 	    $local_hash->{'title'} = '';
@@ -342,16 +345,12 @@ sub _search {
     my($search_term, $key) = @_;
     my @pharm_id = ();
 
-    my $search_result = SOAP::Lite
+    my $soap_service = SOAP::Lite
         -> readable ($self->{readable})
 	-> uri('SearchService')
 	-> proxy('http://www.pharmgkb.org/services/SearchService')
-        -> search ($search_term,
-                type('xsd:boolean' => 1),
-                type ('xsd:boolean' => 0),
-                type ('xsd:boolean' => 0),
-                type ('xsd:boolean' => 0))
-        -> result;
+        -> search ($search_term);
+    my $search_result = $soap_service->result;  
     foreach my $search_obj(@{$search_result}) {
 
 	if($search_obj->[1] =~ m/$key/ig) {
@@ -372,7 +371,7 @@ WWW::Search::PharmGKB - Search and retrieve information from the PharmGKB databa
 
 =head1 VERSION
 
-Version 1.03
+Version 1.08
 
 =cut
 
