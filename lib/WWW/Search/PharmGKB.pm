@@ -7,7 +7,7 @@ use Carp;
 use vars qw($VERSION);
 use Data::Dumper;
 
-$VERSION = '2.00';
+$VERSION = '2.01';
 
 sub new {
     my $class = shift;

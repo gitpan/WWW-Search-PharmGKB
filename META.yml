@@ -1,9 +1,9 @@
 --- #YAML:1.0
 name:               WWW-Search-PharmGKB
-version:            2.00
+version:            2.01
 abstract:           Search and retrieve information from the PharmGKB database
 author:
-    - Your Name <arun@cpan.org>
+    - Arun Venkataraman <arvktr@gmail.com>
 license:            perl
 distribution_type:  module
 configure_requires:
@@ -11,12 +11,14 @@ configure_requires:
 build_requires:
     ExtUtils::MakeMaker:  0
 requires:
+    English:     0
+    SOAP::Lite:  0
     Test::More:  0
 no_index:
     directory:
         - t
         - inc
-generated_by:       ExtUtils::MakeMaker version 6.56
+generated_by:       ExtUtils::MakeMaker version 6.55_02
 meta-spec:
     url:      http://module-build.sourceforge.net/META-spec-v1.4.html
     version:  1.4
